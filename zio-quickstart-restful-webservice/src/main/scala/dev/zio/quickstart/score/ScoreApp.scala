@@ -20,19 +20,24 @@ object ScoreApp:
                   Response.text(e).withStatus(Status.BadRequest)
                 )
             case Right(u) =>
-              val isBlacklisted = Source.fromResource("blacklist.txt").getLines().toList
+              val isBlacklisted = Source
+                .fromResource("blacklist.txt")
+                .getLines()
+                .toList
                 .exists(line => line == u.from || line == u.to)
 
               if (isBlacklisted) {
-                ZIO.succeed(Response.json("""{"success": "false"}"""))
+                ZIO.succeed(Response.json("""{"success": false}"""))
               } else {
                 TransactionRepo
                   .save_transaction(u)
-                  .map(id => Response.json("""{"success": "true"}"""))
+                  .map(id => Response.json("""{"success": true}"""))
               }
         } yield r).orDie
 
       // GET /score
       case Method.GET -> Root / "score" =>
-        TransactionRepo.transactions.map(response => Response.json(response.toJson)).orDie
+        TransactionRepo.transactions
+          .map(response => Response.json(response.toJson))
+          .orDie
     }

@@ -10,7 +10,8 @@ import zio.http._
 
 object MainApp extends ZIOAppDefault:
   def run: ZIO[Environment with ZIOAppArgs with Scope, Throwable, Any] =
-    val httpApps = GreetingApp() ++ DownloadApp() ++ CounterApp() ++ UserApp() ++ ScoreApp()
+    val httpApps =
+      GreetingApp() ++ DownloadApp() ++ CounterApp() ++ UserApp() ++ ScoreApp()
     Server
       .serve(
         httpApps.withDefaultErrorResponse
@@ -23,6 +24,5 @@ object MainApp extends ZIOAppDefault:
 
         // To use the persistence layer, provide the `PersistentUserRepo.layer` layer instead
         InmemoryUserRepo.layer,
-
         InmemoryTransactionRepo.layer
       )
